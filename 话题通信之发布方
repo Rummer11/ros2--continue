@@ -1,0 +1,30 @@
+import rclpy
+from rclpy.node import Node
+from std_msgs.msg import String
+
+
+class MinPublisher(Node):
+    def __init__(self):
+        super().__init__('publisher_py')  # 修复: 原为 'publsher_py'，拼写错误
+        self.publisher_ = self.create_publisher(String, 'topic', 10)
+        time = 0.5
+        self.timer = self.create_timer(time, self.timer_callback)
+        self.i = 0
+
+    def timer_callback(self):
+        msg = String()
+        msg.data = f'hello world.py {self.i}'
+        self.publisher_.publish(msg)
+        self.get_logger().info(f'发布的消息 {msg.data}')
+        self.i += 1
+
+
+def main(args=None):
+    rclpy.init(args=args)
+    min_publisher = MinPublisher()
+    rclpy.spin(min_publisher)
+    rclpy.shutdown()
+
+
+if __name__ == '__main__':
+    main()
